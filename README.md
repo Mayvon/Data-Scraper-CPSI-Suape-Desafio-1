@@ -2,12 +2,10 @@
 
 > **Projeto original:** Desafio SUAPE (Inovação Aberta 2025)
 > **Arquivo principal:** `extracao.py`
-> **Autor:** Mayvon Alves
-> **Licença:** MIT
 
-Este script surgiu para **contar quantas empresas existem no Complexo de SUAPE**. Depois, foi transformado numa pequena **ferramenta de raspagem (scraping) genérica**, que você pode usar em qualquer site que tenha uma lista repetitiva (cartões, tabelas, blocos etc.).
+Este repositório nasceu como **parte específica da solução que apresentei para o Desafio SUAPE #1 na Chamada de Inovação Aberta via CPSI 2025**. No contexto da chamada pública, o **único objetivo** do script foi **contar quantas empresas existem dentro do Complexo Industrial Portuário de SUAPE** e gerar um arquivo GeoJSON com seus pontos. Esse inventário numérico subsidiou análises posteriores do desafio, mas **nenhuma lógica de evacuação ou roteamento** está aqui – só a **raspagem e georreferenciamento**.
 
-Se você nunca raspou dados antes, siga este passo‑a‑passo.
+Depois do programa, evoluí o código para servir como **ferramenta genérica de *scraping***: basta parametrizar seletores ou plugar outro *parser* para coletar dados tabulares de qualquer página que apresente blocos repetitivos de HTML.
 
 ---
 
@@ -32,7 +30,7 @@ cd suape-data-scraper
 pip install -r requirements.txt  # leva menos de 1 minuto
 ```
 
-> **Dica:** Se não for usar Selenium, você pode remover essa linha do `requirements.txt` para instalar menos coisas.
+> **Dica:** Se não for usar Selenium, você pode remover essa linha do `requirements.txt`.
 
 ---
 
@@ -78,7 +76,7 @@ O script precisa de um **arquivo de configuração** dizendo onde estão os dado
 
 ```bash
 CONFIG_FILE=site_config.json \
-python extracao.py --url "https://meu-site.com/lista"
+python extracao.py --url "https://[SEU-SITE-AQUI].com/.../"
 ```
 
 Em segundos você terá `meu-site.geojson` com os pontos.
@@ -89,7 +87,7 @@ Você ainda pode usar o script, mas terá que converter endereços em coordenada
 
 ---
 
-## 5. Funciona mesmo SEM internet
+## 5. Raspando dados de maneira offline
 
 Alguns ambientes (por exemplo, notebooks online) bloqueiam acesso à web. Faça assim:
 
@@ -128,7 +126,7 @@ setx CONFIG_FILE site_config.json
 
 ---
 
-## 7. Quero entender o código (resumido)
+## 7. Entendendo o código 
 
 ```text
 main()                # ponto de entrada
@@ -145,8 +143,6 @@ Se uma estratégia falhar, ele tenta a próxima — por isso quase sempre funcio
 ## 8. Próximos passos (ideias)
 
 * Exportar também em **CSV**.
-* Criar menu de linha de comando (`python -m scraper --help`).
-* Rodar todo dia com **GitHub Actions** para pegar dados novos.
 * Fazer um **dashboard** no Streamlit mostrando o mapa.
 
 ---
@@ -159,7 +155,7 @@ Abra uma **issue** aqui no GitHub descrevendo:
 * O que tentou fazer;
 * Mensagens de erro (se houver).
 
-Fico feliz em ajudar! 😉
+Fico feliz em aprender junto! 😉
 
 ---
 
