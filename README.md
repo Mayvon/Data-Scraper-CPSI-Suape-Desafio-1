@@ -43,9 +43,9 @@ O **Estudo Técnico Preliminar (ETP)** do Desafio #1 (em `docs/Desafio_1.pdf`) 
 
 | Camada                                         | Descrição                         | Dependências                 |
 | ---------------------------------------------- | --------------------------------- | ---------------------------- |
-| ☝️ **Estratégia 1 – Selenium**                 | Renderiza páginas JS‑heavy.       | `selenium`, `chromedriver`   |
-| ✌️ **Estratégia 2 – Requests + BeautifulSoup** | *Scraping* de HTML estático.      | `requests`, `beautifulsoup4` |
-| 🤟 **Estratégia 3 – Offline**                  | Parseia um HTML salvo localmente. | Nenhuma                      |
+|  **Estratégia 1 – Selenium**                 | Renderiza páginas JS‑heavy.       | `selenium`, `chromedriver`   |
+|  **Estratégia 2 – Requests + BeautifulSoup** | *Scraping* de HTML estático.      | `requests`, `beautifulsoup4` |
+|  **Estratégia 3 – Offline**                  | Parseia um HTML salvo localmente. | Nenhuma                      |
 
 O script percorre as estratégias **nesta ordem** e para na primeira que obtiver dados válidos, salvando um **GeoJSON** (EPSG:4326) com os pontos.
 
