@@ -1,185 +1,166 @@
-# SUAPE 'Data Scraper' e 'Web Harvester'
+# Raspador de Dados SUAPE – 'Data Scraper & Web Harvester'
 
-> **Origem:** Desafio SUAPE – Inovação Aberta 2025
-> **Escopo original:** **Desafio #1** – *Sistema de Evasão de Pessoas*
-> **Script‑base:** `extracao.py`
-> **Autor:** Mayvon Alves
+> **Projeto original:** Desafio SUAPE (Inovação Aberta 2025)
+> **Arquivo principal:** `extracao.py`
+> **Autor:** Mayvon Alves
 > **Licença:** MIT
 
-Este repositório nasceu como **parte específica da solução que apresentei para o Desafio SUAPE #1 na Chamada de Inovação Aberta via CPSI 2025**. No contexto da chamada pública, o **único objetivo** do script foi **contar quantas empresas existem dentro do Complexo Industrial Portuário de SUAPE** e gerar um arquivo GeoJSON com seus pontos. Esse inventário numérico subsidiou análises posteriores do desafio, mas **nenhuma lógica de evacuação ou roteamento** está aqui – só a **raspagem e georreferenciamento**.
+Este script surgiu para **contar quantas empresas existem no Complexo de SUAPE**. Depois, foi transformado numa pequena **ferramenta de raspagem (scraping) genérica**, que você pode usar em qualquer site que tenha uma lista repetitiva (cartões, tabelas, blocos etc.).
 
-Depois do programa, evoluí o código para servir como **ferramenta genérica de *scraping***: basta parametrizar seletores ou plugar outro *parser* para coletar dados tabulares de qualquer página que apresente blocos repetitivos de HTML.
-
----
-
-## Índice
-
-1. [Contexto do Desafio](#contexto-do-desafio)
-2. [Visão Geral do Código](#visão-geral-do-código)
-3. [Adaptando para Outros Sites](#adaptando-para-outros-sites)
-4. [Dependências](#dependências)
-5. [Como Executar](#como-executar)
-6. [Estrutura de Saída](#estrutura-de-saída)
-7. [Design Decisions](#design-decisions)
-8. [Próximos Passos](#próximos-passos)
-9. [Contribuindo](#contribuindo)
-10. [Referências](#referências)
+Se você nunca raspou dados antes, siga este passo‑a‑passo.
 
 ---
 
-## Contexto do Desafio
+## 1. O que o script faz?
 
-O **Estudo Técnico Preliminar (ETP)** do Desafio #1 (em `docs/Desafio_1.pdf`) pedia, como primeira etapa, um *levamento fidedigno* das empresas instaladas no perímetro oficial do porto. Com esse número em mãos, a equipe de inovação poderia:
-
-1. **Dimensionar a população potencialmente exposta** em cenários de risco;
-2. **Planejar testes de campo representativos** com base no total de stakeholders;
-3. **Definir custos** de futuras integrações (ex.: licenças por empresa).
-
-> 🔍 **Importante:** O *crawler* não contém qualquer lógica de avaliação de risco ou evacuação. Ele **apenas** gera a lista de empresas e respectiva contagem.
+1. **Acessa** a página indicada (online ou salva em disco).
+2. **Encontra** cada bloco de empresa (ou produto, notícia, evento…).
+3. **Lê** as informações principais (nome, atividade, latitude, longitude).
+4. **Salva** tudo num arquivo **GeoJSON** (`empresas_suape.geojson`). Esse formato funciona em QGIS, GeoPandas, Google Maps, etc.
 
 ---
 
-## Visão Geral do Código
-
-| Camada                                         | Descrição                         | Dependências                 |
-| ---------------------------------------------- | --------------------------------- | ---------------------------- |
-|  **Estratégia 1 – Selenium**                 | Renderiza páginas JS‑heavy.       | `selenium`, `chromedriver`   |
-|  **Estratégia 2 – Requests + BeautifulSoup** | *Scraping* de HTML estático.      | `requests`, `beautifulsoup4` |
-|  **Estratégia 3 – Offline**                  | Parseia um HTML salvo localmente. | Nenhuma                      |
-
-O script percorre as estratégias **nesta ordem** e para na primeira que obtiver dados válidos, salvando um **GeoJSON** (EPSG:4326) com os pontos.
-
-### Fluxo resumido
-
-```
-main()   →   estratégia (1|2|3)   →   _parse_empresas_from_soup()   →   GeoJSON
-```
-
----
-
-## Adaptando para Outros Sites
-
-O projeto agora é **config‑driven**:
-
-### 1. Defina seletores em JSON
-
-Crie `site_config.json` com os seletores/atributos que descrevem cada campo:
-
-```json
-{
-  "empresa_block": "div.card",        // bloco repetitivo
-  "nome": ".card-title",             // seletor para o nome
-  "atividade": ".card-atividade",     // seletor para a atividade
-  "polo": ".tag-polo",               // seletor para o polo (opcional)
-  "lat": "data-lat",                 // atributo ou seletor para latitude
-  "lng": "data-lng"                  // atributo ou seletor para longitude
-}
-```
-
-### 2. Execute com a configuração
+## 2. Instalação Rápida
 
 ```bash
-CONFIG_FILE=site_config.json python extracao.py --url "https://meu-site.com/lista"
-```
-
-### 3. Precisa de algo mais complexo?
-
-Implemente um *parser* em `parsers/meu_site.py` com a assinatura:
-
-```python
-def parse(html: str) -> list[dict]:
-    ...  # devolva features GeoJSON
-```
-
-O script detecta o módulo automaticamente via `--parser meu_site`.
-
----
-
-## Dependências
-
-* Python ≥ 3.9
-* `beautifulsoup4`
-* `requests`
-* `selenium` (opcional)
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## Como Executar
-
-```bash
-# 1 – clone
+# 1) Instale Python 3.9+ se ainda não tiver.
+# 2) Baixe o projeto
 git clone https://github.com/seu-usuario/suape-data-scraper.git
 cd suape-data-scraper
 
-# 2 – opções (exemplos)
-export CONFIG_FILE="site_config.json"
-export HTML_FALLBACK="backup.html"
-export CHROMEDRIVER="/usr/bin/chromedriver"
-
-# 3 – run!
-python extracao.py --url "https://site-alvo.com"
+# 3) Instale as bibliotecas necessárias
+pip install -r requirements.txt  # leva menos de 1 minuto
 ```
 
-| Variável        | Default                    | Descrição                    |
-| --------------- | -------------------------- | ---------------------------- |
-| `CONFIG_FILE`   | *(vazio)*                  | JSON com seletores/atributos |
-| `HTML_FALLBACK` | `suape_mapa_empresas.html` | HTML offline                 |
-| `CHROMEDRIVER`  | `chromedriver`             | WebDriver                    |
-| `SELENIUM_PORT` | `9515`                     | Porta Selenium               |
+> **Dica:** Se não for usar Selenium, você pode remover essa linha do `requirements.txt` para instalar menos coisas.
 
 ---
 
-## Estrutura de Saída
+## 3. Primeiro teste (sem alterar nada)
 
-`*.geojson` no padrão `FeatureCollection`, contendo:
+```bash
+python extracao.py  # usa o endereço padrão de SUAPE
+```
 
-* `geometry` – Point (lon, lat)
-* `properties.Nome`
-* `properties.Atividade`
-* `properties.Polo` (opcional)
+Depois de alguns segundos você verá algo como:
 
-Pronto para **QGIS**, **GeoPandas**, **Kepler.gl**, **Mapbox GL JS** etc.
+```
+[INFO] 83 empresas encontradas
+[INFO] Arquivo 'empresas_suape.geojson' salvo
+```
 
----
-
-## Design Decisions
-
-1. **Portabilidade first** – roda até em Pyodide sem `ssl`.
-2. **Fail‑safe** – três estratégias minimizam falhas.
-3. **Config‑driven** – seletores externos ao código.
-4. **GeoJSON** – formato aberto e versionável.
+Pronto! O arquivo aparece na mesma pasta.
 
 ---
 
-## Próximos Passos
+## 4. Usar em QUALQUER outro site
 
-* CLI oficial (`python -m scraper --help`).
-* Saída em CSV e Parquet.
-* GitHub Actions para rodar *scraping* agendado.
-* Exemplo de dashboard Streamlit.
+O script precisa de um **arquivo de configuração** dizendo onde estão os dados na página. Exemplo bem curto:
+
+**site\_config.json**
+
+```json
+{
+  "empresa_block": "div.card",
+  "nome": ".card-title",
+  "atividade": ".card-atividade",
+  "lat": "data-lat",
+  "lng": "data-lng"
+}
+```
+
+* `empresa_block` → o CSS do bloco que se repete.
+* `nome`, `atividade` → onde pegar texto.
+* `lat`, `lng` → atributo ou seletor com as coordenadas.
+* Campos que não existir (ex.: `polo`) podem ser omitidos.
+
+### Executando
+
+```bash
+CONFIG_FILE=site_config.json \
+python extracao.py --url "https://meu-site.com/lista"
+```
+
+Em segundos você terá `meu-site.geojson` com os pontos.
+
+### E se o site não mostrar latitude/longitude?
+
+Você ainda pode usar o script, mas terá que converter endereços em coordenadas (chama‑se **geocodificação**). Isso não está incluído aqui, mas serviços como Nominatim ou Google Maps API fazem isso.
 
 ---
 
-## Contribuindo
+## 5. Funciona mesmo SEM internet
 
-Pull Requests são bem‑vindos! Antes, abra uma *issue* contendo:
+Alguns ambientes (por exemplo, notebooks online) bloqueiam acesso à web. Faça assim:
 
-* URL alvo;
-* Campos desejados;
-* Especificidades do HTML.
+1. Abra a página no seu navegador.
+2. Salve como **HTML Completo** (Ctrl+S) e renomeie para `pagina.html`.
+3. Execute:
 
----
+   ```bash
+   HTML_FALLBACK=pagina.html python extracao.py
+   ```
 
-## Referências
-
-* **ETP – Desafio #1** (`docs/Desafio_1.pdf`).
-* Site oficial do Complexo de SUAPE.
-* Beautiful Soup Documentation.
+O script lê o arquivo local.
 
 ---
 
-> Feito para o Desafio SUAPE, Chamada de Inovação Aberta 2025 – e evoluído para qualquer pessoa que precise de um *scraper* plug‑and‑play.
+## 6. Opções úteis (variáveis de ambiente)
+
+| Nome            | Serve para…                        | Padrão                     |
+| --------------- | ---------------------------------- | -------------------------- |
+| `CONFIG_FILE`   | JSON com seletores                 | *(vazio)*                  |
+| `HTML_FALLBACK` | Caminho do HTML offline            | `suape_mapa_empresas.html` |
+| `CHROMEDRIVER`  | Caminho do ChromeDriver (Selenium) | `chromedriver`             |
+| `SELENIUM_PORT` | Porta onde o driver escuta         | `9515`                     |
+
+Você define assim (Linux/Mac):
+
+```bash
+export CONFIG_FILE=site_config.json
+```
+
+No Windows (PowerShell):
+
+```ps1
+setx CONFIG_FILE site_config.json
+```
+
+---
+
+## 7. Quero entender o código (resumido)
+
+```text
+main()                # ponto de entrada
+ ├─ tenta Selenium    # se disponível
+ ├─ tenta Requests    # se a página é simples
+ └─ tenta Offline     # se não houver Internet
+      ↳ _parse_empresas_from_soup()  # extrai campos e monta GeoJSON
+```
+
+Se uma estratégia falhar, ele tenta a próxima — por isso quase sempre funciona.
+
+---
+
+## 8. Próximos passos (ideias)
+
+* Exportar também em **CSV**.
+* Criar menu de linha de comando (`python -m scraper --help`).
+* Rodar todo dia com **GitHub Actions** para pegar dados novos.
+* Fazer um **dashboard** no Streamlit mostrando o mapa.
+
+---
+
+## 9. Dúvidas ou problemas?
+
+Abra uma **issue** aqui no GitHub descrevendo:
+
+* Link da página que quer raspar;
+* O que tentou fazer;
+* Mensagens de erro (se houver).
+
+Fico feliz em ajudar! 😉
+
+---
+
+> Desenvolvido durante o Desafio SUAPE 2025 e simplificado para qualquer pessoa que queira raspar listas da web.
