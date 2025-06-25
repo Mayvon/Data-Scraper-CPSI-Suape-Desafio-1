@@ -181,7 +181,7 @@ features = _parse_items_generic(
 )
 ```
 
-#### Dicas extras
+#### Dicas 
 
 * **Sem mapa?** Fique só com Selenium + scroll infinito, trocando o seletor de rolagem se precisar.
 * **Tabelas estáticas** não exigem Selenium: com `requests` + `pandas.read_html()` tudo sai em duas linhas.
@@ -191,5 +191,6 @@ features = _parse_items_generic(
 
 ---
 
+Qualquer dúvida, é só chamar pra gente apender juntos. :)
 
 
