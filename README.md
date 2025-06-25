@@ -8,7 +8,7 @@ Este repositório nasceu como **parte específica da solução que apresentei pa
 Depois do programa, evoluí o código para servir como **ferramenta genérica de *scraping***: basta parametrizar seletores ou plugar outro *parser* para coletar dados tabulares de qualquer página que apresente blocos repetitivos de HTML.
 
 ---
-# Guia Rápido — `extracao.py`
+## Guia Rápido — `extracao.py`
 
 > **Objetivo:** gerar `empresas_suape.geojson` com os pontos de todas as empresas listadas no  
 > mapa oficial do Complexo Industrial Portuário de Suape.  
@@ -19,7 +19,7 @@ Depois do programa, evoluí o código para servir como **ferramenta genérica de
 
 ---
 
-## 1. Pré-requisitos
+### 1. Pré-requisitos
 
 | Componente | Para quê? | Como instalar |
 |------------|-----------|---------------|
@@ -35,7 +35,7 @@ Depois do programa, evoluí o código para servir como **ferramenta genérica de
 
 ---
 
-## 2. Instalação mínima
+### 2. Instalação mínima
 
 ```bash
 python -m venv venv
