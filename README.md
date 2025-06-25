@@ -1,7 +1,7 @@
 # Raspador de Dados SUAPE – 'Data Scraper & Web Harvester'
 
 > **Projeto original:** Desafio SUAPE (Inovação Aberta 2025)
-> **Arquivo principal:** `extracao.py`
+
 
 Este repositório nasceu como **parte específica da solução que apresentei para o Desafio SUAPE #1 na Chamada de Inovação Aberta via CPSI 2025**. No contexto da chamada pública, o **único objetivo** do script foi **contar quantas empresas existem dentro do Complexo Industrial Portuário de SUAPE** e gerar um arquivo GeoJSON com seus pontos. Esse inventário numérico subsidiou análises posteriores do desafio, mas **nenhuma lógica de evacuação ou roteamento** está aqui – só a **raspagem e georreferenciamento**.
 
