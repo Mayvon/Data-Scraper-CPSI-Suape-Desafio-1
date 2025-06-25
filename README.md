@@ -1,4 +1,4 @@
-# SUAPE Data Scraper and Web Harvester
+# SUAPE 'Data Scraper' e 'Web Harvester'
 
 > **Origem:** Desafio SUAPE – Inovação Aberta 2025
 > **Escopo original:** **Desafio #1** – *Sistema de Evasão de Pessoas*
