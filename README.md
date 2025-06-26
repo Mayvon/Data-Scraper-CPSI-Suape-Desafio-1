@@ -48,9 +48,9 @@ Se o `chromedriver` **não** estiver no `PATH`:
 
 ```bash
 # Linux / macOS
-export CHROMEDRIVER=/caminho/para/chromedriver
+export CHROMEDRIVER=/../../chromedriver
 # Windows PowerShell
-setx CHROMEDRIVER "C:\caminho\para\chromedriver.exe"
+setx CHROMEDRIVER "C:\..\..\chromedriver.exe"
 ```
 
 ---
