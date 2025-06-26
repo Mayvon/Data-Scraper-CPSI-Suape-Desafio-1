@@ -191,6 +191,6 @@ features = _parse_items_generic(
 
 ---
 
-Qualquer dúvida, é só chamar pra gente apender juntos. :)
+Qualquer dúvida, é só chamar para apendermos juntos. :)
 
 
